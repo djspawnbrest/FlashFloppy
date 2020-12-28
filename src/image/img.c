@@ -607,6 +607,8 @@ static bool_t atr_open(struct image *im)
     } else if (sz >= (360*1024-3*128)) {
         /* 40-2-18, 256b/s, MFM */
         im->nr_sides = 2;
+    } else {
+        rate = 250;
     }
     im->img.base_off = 16;
 
@@ -619,7 +621,7 @@ static bool_t atr_open(struct image *im)
         trk->is_fm = is_fm;
         trk->invert_data = TRUE;
         trk->data_rate = rate;
-        trk->interleave = ATR_INTERLEAVE(nr_sectors);
+        trk->interleave = (rate==250)?15:ATR_INTERLEAVE(nr_sectors);
         sec = &im->img.sec_info_base[trk->sec_off];
         for (j = 0; j < nr_sectors; j++) {
             sec->r = j + 1;
